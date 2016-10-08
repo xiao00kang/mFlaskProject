@@ -7,10 +7,10 @@
 <body>
 <ol>
     {% for i in new_dict %}
-        <li><label style="color: red">new!</label><a href="{{ i }}">{{ i }}</a></li>
+        <li><label style="color: red">new!</label><a href="{{ new_dict[i] }}">{{ i }}</a></li>
     {% endfor %}
     {% for i in old_dict %}
-        <li><a href="{{ i }}">{{ i }}</a></li>
+        <li><a href="{{ old_dict[i]  }}">{{ i }}</a></li>
     {% endfor %}
 </ol>
 
