@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查询结果</title>
+</head>
+<body>
+<ol>
+    {% for i in new_dict %}
+        <li><label style="color: red">new!</label><a href="{{ i }}">{{ i }}</a></li>
+    {% endfor %}
+    {% for i in old_dict %}
+        <li><a href="{{ i }}">{{ i }}</a></li>
+    {% endfor %}
+</ol>
+
+</body>
+</html>
