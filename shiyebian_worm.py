@@ -3,7 +3,7 @@
 import logging
 import requests
 from bs4 import BeautifulSoup
-from collections import Iterator
+from exception import *
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,13 +12,18 @@ def download_html(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36'
     }
+    try:
+        r = requests.get(url, headers)
+        if r.ok:
+            html = r.content
+            return BeautifulSoup(html, 'html.parser')
+        else:
+            raise RequestException('url:'+str(url)+',status code:'+r.status_code)
+    except requests.RequestException as e:
+        raise RequestException(e)
 
-    html = requests.get(url, headers).content
-    soup = BeautifulSoup(html, 'html.parser')
-    return soup
 
-
-def parse_html(soup, keyword=''):
+def parse_shengshi(soup, keyword=''):
     print(get_list_diqu(soup))
     lie1 = soup.find('ul', attrs={'class', 'lie1'})
     i = 0
@@ -37,9 +42,6 @@ def parse_html(soup, keyword=''):
             # div = soup.find('div', attrs={'class', 'zhengwen'})
             # for p in div.find_all('p'):
             #     print(p.getText())
-    for i in my_dict:
-        logging.info(i)
-        logging.info(my_dict[i])
     return my_dict
 
 
@@ -53,7 +55,7 @@ def get_list_diqu(soup):
 
 def main():
     url = 'http://www.shiyebian.net/hebei/'
-    parse_html(download_html(url))
+    parse_shengshi(download_html(url))
 
 
 if __name__ == '__main__':

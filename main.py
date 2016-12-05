@@ -1,5 +1,7 @@
 # coding=utf-8
-from flask import Flask, render_template
+import json
+
+from flask import Flask, render_template, jsonify
 from datetime import datetime
 import mongoDb
 import shiyebian_worm
@@ -22,7 +24,7 @@ def time():
 
 @app.route('/shiye/')
 def shiye_search():
-    my_dict  = shiyebian_worm.get_list_diqu(shiyebian_worm.download_html(URL_SHIYE))
+    my_dict = shiyebian_worm.get_list_diqu(shiyebian_worm.download_html(URL_SHIYE))
     return render_template('result.html', old_dict=my_dict)
 
 
@@ -37,10 +39,10 @@ def search_default_index(keyword):
 
 @app.route('/shiye/<string:keyword>/<int:index>')
 def search_with_index(keyword, index):
-    url = 'http://www.shiyebian.net/'+keyword
+    url = 'http://www.shiyebian.net/' + keyword
     if index != 1:
         url = url + 'index_' + str(index) + '.html'
-    my_dict = shiyebian_worm.parse_html(shiyebian_worm.download_html(url))
+    my_dict = shiyebian_worm.parse_shengshi(shiyebian_worm.download_html(url))
     coll = mongoDb.get_collection(mongoDb.get_db())
     old_dict = {}
     new_dict = {}
@@ -53,6 +55,42 @@ def search_with_index(keyword, index):
             new_dict[key] = my_dict[key]
 
     return render_template('result.html', old_dict=old_dict, new_dict=new_dict)
+
+
+# 获取json数据 api
+
+@app.route('/api/shiye')
+def get_list_province():
+    my_dict = shiyebian_worm.get_list_diqu(shiyebian_worm.download_html(URL_SHIYE))
+    return json.dumps(my_dict, ensure_ascii=False)
+
+
+@app.route('/api/shiye/<string:province>')
+def get_first_page_province(province):
+    return get_province(province, index=1)
+
+
+@app.route('/api/shiye/<string:province>/<int:index>')
+def get_province(province, index):
+    url = URL_SHIYE + province
+
+    if index > 1:
+        url = url + '/index_' + str(index) + '.html'
+
+    my_dict = shiyebian_worm.parse_shengshi(shiyebian_worm.download_html(url))
+
+    # return url
+    return json.dumps(my_dict, ensure_ascii=False)
+
+
+@app.route('/api/shiye/<string:province>/<string:city>')
+def get_first_page_city_or_county(province, city):
+    return get_city_or_county(province, city, index=1)
+
+
+@app.route('/api/shiye/<string:province>/<string:city>/<int:index>')
+def get_city_or_county(province, city, index):
+    return 'city'
 
 
 if __name__ == '__main__':

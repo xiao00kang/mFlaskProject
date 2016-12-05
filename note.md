@@ -44,4 +44,13 @@ html标签如下:
     <div class="lie_qx">
 ![选择区县](./img/quxian_2.png)   
     
+##思路分析
 
+爬去的内容分为两种：
+
+    1.省市的全部招聘信息 exp:
+        http://www.shiyebian.net/hebei/
+        http://www.shiyebian.net/hebei/shijiazhuang/
+    2.区县的全部招聘信息 exp:
+        http://www.shiyebian.net/hebei/shijiazhuangqiaodongqu/
+        http://www.shiyebian.net/beijing/dongchengqu/
