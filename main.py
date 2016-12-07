@@ -58,7 +58,6 @@ def search_with_index(keyword, index):
 
 
 # 获取json数据 api
-
 @app.route('/api/shiye', methods=["GET"])
 def get_list_province():
     my_dict = shiyebian_worm.get_list_province(shiyebian_worm.download_html(URL_SHIYE))
