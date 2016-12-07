@@ -24,33 +24,36 @@ def download_html(url):
 
 
 def parse_shengshi(soup, keyword=''):
-    print(get_list_diqu(soup))
+    print(get_list_province(soup))
     lie1 = soup.find('ul', attrs={'class', 'lie1'})
     i = 0
-    my_dict = {}
     for li in lie1.find_all('li'):
         content = li.getText()
-
+        my_list = []
         if keyword in content:
             i += 1
+            my_dict = {}
             content_url = li.find('a')['href']
-            # print(i, content)
-            # print(content_url)
-            my_dict[content] = content_url
+            my_dict['title'] = content
+            my_dict['url'] = content_url
+            my_list.append(my_dict)
             #  获取链接内容
             # soup = BeautifulSoup(download_html(content_url))
             # div = soup.find('div', attrs={'class', 'zhengwen'})
             # for p in div.find_all('p'):
             #     print(p.getText())
-    return my_dict
+    return my_list
 
 
-def get_list_diqu(soup):
-    diqu_dict = {}
+def get_list_province(soup):
+    province_list = []
     diqu = soup.find('div', attrs={'class', 'diqu'})
     for a in diqu.find_all('a'):
-       diqu_dict[a.getText()] = '/shiye'+a['href']
-    return diqu_dict
+        province ={}
+        province['province'] = a.getText()
+        province['href'] = a['href']
+        province_list.append(province)
+    return province_list
 
 
 def main():

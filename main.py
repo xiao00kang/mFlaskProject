@@ -24,8 +24,8 @@ def time():
 
 @app.route('/shiye/')
 def shiye_search():
-    my_dict = shiyebian_worm.get_list_diqu(shiyebian_worm.download_html(URL_SHIYE))
-    return render_template('result.html', old_dict=my_dict)
+    t = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    return render_template('result.html', time=t)
 
 
 def search_default():
@@ -59,36 +59,34 @@ def search_with_index(keyword, index):
 
 # 获取json数据 api
 
-@app.route('/api/shiye')
+@app.route('/api/shiye', methods=["GET"])
 def get_list_province():
-    my_dict = shiyebian_worm.get_list_diqu(shiyebian_worm.download_html(URL_SHIYE))
+    my_dict = shiyebian_worm.get_list_province(shiyebian_worm.download_html(URL_SHIYE))
     return json.dumps(my_dict, ensure_ascii=False)
 
 
-@app.route('/api/shiye/<string:province>')
+@app.route('/api/shiye/<string:province>', methods=["GET"])
 def get_first_page_province(province):
     return get_province(province, index=1)
 
 
-@app.route('/api/shiye/<string:province>/<int:index>')
+@app.route('/api/shiye/<string:province>/<int:index>', methods=["GET"])
 def get_province(province, index):
     url = URL_SHIYE + province
-
     if index > 1:
         url = url + '/index_' + str(index) + '.html'
-
     my_dict = shiyebian_worm.parse_shengshi(shiyebian_worm.download_html(url))
 
     # return url
     return json.dumps(my_dict, ensure_ascii=False)
 
 
-@app.route('/api/shiye/<string:province>/<string:city>')
+@app.route('/api/shiye/<string:province>/<string:city>', methods=["GET"])
 def get_first_page_city_or_county(province, city):
     return get_city_or_county(province, city, index=1)
 
 
-@app.route('/api/shiye/<string:province>/<string:city>/<int:index>')
+@app.route('/api/shiye/<string:province>/<string:city>/<int:index>', methods=["GET"])
 def get_city_or_county(province, city, index):
     return 'city'
 

@@ -1,18 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+<script>
+    $.ajax('/api/shiye', {
+        dataType: 'json'
+    }).done(function (data) {
+        var div = document.getElementById('content');
+        var str =""
+        for (i in data) {
+            str+="<a href=\""+data[i].href+"\">"+data[i].province+"</a></br>"
+            console.log(data[i].province)
+        }
+        console.log(data)
+        div.innerHTML =str
+    }).fail(function (xhr, status) {
+        alert(xhr.status + ',' + status)
+    })
+</script>
 <head>
     <meta charset="UTF-8">
     <title>查询结果</title>
 </head>
 <body>
-<ol>
-    {% for i in new_dict %}
-        <li><label style="color: red">new!</label><a href="{{ new_dict[i] }}">{{ i }}</a></li>
-    {% endfor %}
-    {% for i in old_dict %}
-        <li><a href="{{ old_dict[i]  }}">{{ i }}</a></li>
-    {% endfor %}
-</ol>
-
+<h4>时间:{{ time }}</h4>
+{#<ol>#}
+{#    {% for i in new_dict %}#}
+{#        <li><label style="color: red">new!</label><a href="{{ new_dict[i] }}">{{ i }}</a></li>#}
+{#    {% endfor %}#}
+{#    {% for i in old_dict %}#}
+{#        <li><a href="{{ old_dict[i]  }}">{{ i }}</a></li>#}
+{#    {% endfor %}#}
+{#</ol>#}
+<div id="content" style="width: 90%; margin: 15px 0;">
+</div>
 </body>
 </html>
