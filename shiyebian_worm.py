@@ -18,20 +18,19 @@ def download_html(url):
             html = r.content
             return BeautifulSoup(html, 'html.parser')
         else:
-            raise RequestException('url:'+str(url)+',status code:'+r.status_code)
+            raise RequestException('url:' + str(url) + ',status code:' + str(r.status_code))
     except requests.RequestException as e:
         raise RequestException(e)
 
 
 def parse_shengshi(soup, keyword=''):
-    print(get_list_province(soup))
     lie1 = soup.find('ul', attrs={'class', 'lie1'})
-    i = 0
+    if lie1 == None:
+        return parse_quxian(soup, keyword=keyword)
+    my_list = []
     for li in lie1.find_all('li'):
         content = li.getText()
-        my_list = []
         if keyword in content:
-            i += 1
             my_dict = {}
             content_url = li.find('a')['href']
             my_dict['title'] = content
@@ -45,11 +44,26 @@ def parse_shengshi(soup, keyword=''):
     return my_list
 
 
+def parse_quxian(soup, keyword=''):
+    lie_qx = soup.find('div', attrs={'class', 'lie_qx'})
+    my_list = []
+    for a in lie_qx.find_all('a'):
+        content = a.getText()
+        if not '查看详情' in content:
+            if keyword in content:
+                href = a['href']
+                my_dict = {}
+                my_dict['title'] = content
+                my_dict['url'] = href
+                my_list.append(my_dict)
+    return my_list
+
+
 def get_list_province(soup):
     province_list = []
     diqu = soup.find('div', attrs={'class', 'diqu'})
     for a in diqu.find_all('a'):
-        province ={}
+        province = {}
         province['province'] = a.getText()
         province['href'] = a['href']
         province_list.append(province)

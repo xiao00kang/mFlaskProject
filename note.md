@@ -46,7 +46,7 @@ html标签如下:
     
 ##思路分析
 
-爬去的内容分为两种：
+实际爬去的内容分为两种：
 
     1.省市的全部招聘信息 exp:
         http://www.shiyebian.net/hebei/
@@ -54,3 +54,46 @@ html标签如下:
     2.区县的全部招聘信息 exp:
         http://www.shiyebian.net/hebei/shijiazhuangqiaodongqu/
         http://www.shiyebian.net/beijing/dongchengqu/
+先request获取网页内容：
+
+    def download_html(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36'
+    }
+    try:
+        r = requests.get(url, headers)
+        if r.ok:
+            html = r.content
+            return BeautifulSoup(html, 'html.parser')
+        else:
+            raise RequestException('url:'+str(url)+',status code:'+r.status_code)
+    except requests.RequestException as e:
+        raise RequestException(e)
+然后爬去省份信息：
+
+    #返回一个[{"province":xxx,"href":xxx},xxx]的数列，方便直接构造json数据
+    def get_list_province(soup):
+        province_list = []
+        diqu = soup.find('div', attrs={'class', 'diqu'})
+        for a in diqu.find_all('a'):
+            province ={}
+            province['province'] = a.getText()
+            province['href'] = a['href']
+            province_list.append(province)
+        return province_list
+爬去全省市的招聘信息：
+
+    def parse_shengshi(soup, keyword=''):
+        lie1 = soup.find('ul', attrs={'class', 'lie1'})
+                    my_list = []
+        for li in lie1.find_all('li'):
+            content = li.getText()
+            if keyword in content:
+                my_dict = {}
+                content_url = li.find('a')['href']
+                my_dict['title'] = content
+                my_dict['url'] = content_url
+                my_list.append(my_dict)
+        return my_list
+
+然后爬取区县招聘信息：

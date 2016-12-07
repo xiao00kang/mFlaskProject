@@ -64,7 +64,7 @@ def get_list_province():
     return json.dumps(my_dict, ensure_ascii=False)
 
 
-@app.route('/api/shiye/<string:province>', methods=["GET"])
+@app.route('/api/shiye/<string:province>/', methods=["GET"])
 def get_first_page_province(province):
     return get_province(province, index=1)
 
@@ -87,7 +87,10 @@ def get_first_page_city_or_county(province, city):
 
 @app.route('/api/shiye/<string:province>/<string:city>/<int:index>', methods=["GET"])
 def get_city_or_county(province, city, index):
-    return 'city'
+    # TODO 翻页逻辑
+    url = URL_SHIYE + province+'/'+city
+    my_dict = shiyebian_worm.parse_shengshi(shiyebian_worm.download_html(url))
+    return json.dumps(my_dict,ensure_ascii=False)
 
 
 if __name__ == '__main__':
