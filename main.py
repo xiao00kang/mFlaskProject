@@ -80,7 +80,7 @@ def get_province(province, index):
     return json.dumps(my_dict, ensure_ascii=False)
 
 
-@app.route('/api/shiye/<string:province>/<string:city>', methods=["GET"])
+@app.route('/api/shiye/<string:province>/<string:city>/', methods=["GET"])
 def get_first_page_city_or_county(province, city):
     return get_city_or_county(province, city, index=1)
 
@@ -89,6 +89,8 @@ def get_first_page_city_or_county(province, city):
 def get_city_or_county(province, city, index):
     # TODO 翻页逻辑
     url = URL_SHIYE + province+'/'+city
+    if index > 1:
+        url = url + '/index_' + str(index) + '.html'
     my_dict = shiyebian_worm.parse_shengshi(shiyebian_worm.download_html(url))
     return json.dumps(my_dict,ensure_ascii=False)
 
