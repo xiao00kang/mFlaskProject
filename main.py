@@ -87,7 +87,6 @@ def get_first_page_city_or_county(province, city):
 
 @app.route('/api/shiye/<string:province>/<string:city>/<int:index>', methods=["GET"])
 def get_city_or_county(province, city, index):
-    # TODO 翻页逻辑
     url = URL_SHIYE + province+'/'+city
     if index > 1:
         url = url + '/index_' + str(index) + '.html'
