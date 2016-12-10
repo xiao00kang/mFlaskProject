@@ -75,8 +75,6 @@ def get_province(province, index):
     if index > 1:
         url = url + '/index_' + str(index) + '.html'
     my_dict = shiyebian_worm.parse_shengshi(shiyebian_worm.download_html(url))
-
-    # return url
     return json.dumps(my_dict, ensure_ascii=False)
 
 
