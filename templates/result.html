@@ -13,7 +13,7 @@
         var str = ""
         for (i in data) {
             str += "<a onclick=\"javascript:get_content(" + data[i].href + ")\">" + data[i].province + "</a>&nbsp;"
-            if (i != 0 && i % 5 == 0)
+            if (i != 0 && i % 10 == 0)
                 str += "</br>"
             console.log(data[i].province)
         }
@@ -40,18 +40,15 @@
         })
     }
 </script>
-
 <head>
     <meta charset="UTF-8">
     <title>事业编查询</title>
 </head>
 <body>
-
-<div class="snippet-demo-container demo-card demo-card__square" style="padding: 15px">
+<div class="snippet-demo-container demo-card demo-card__square" style="margin:0 auto;padding: 15px">
     <style>
         .demo-card-square.mdl-card {
-            width: 50%;
-            height: 200px;
+            width: 70%;
         }
 
         .demo-card-square > .mdl-card__title {
@@ -68,7 +65,7 @@
         </div>
     </div>
 </div>
-<div style="padding: 15px">
+<div style="padding: 15px ;width: 70% ;text-align:center">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
         <thead>
         <tr>
@@ -80,7 +77,6 @@
     </table>
     <p style="bottom: auto">{{ time }}</p>
 </div>
-
 
 </body>
 </html>

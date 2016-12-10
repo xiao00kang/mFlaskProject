@@ -96,4 +96,18 @@ html标签如下:
                 my_list.append(my_dict)
         return my_list
 
-然后爬取区县招聘信息：
+爬取区县招聘信息：
+
+    def parse_quxian(soup, keyword=''):
+        lie_qx = soup.find('div', attrs={'class', 'lie_qx'})
+        my_list = []
+        for a in lie_qx.find_all('a'):
+            content = a.getText()
+            if not '查看详情' in content:
+                if keyword in content:
+                    href = a['href']
+                    my_dict = {}
+                    my_dict['title'] = content
+                    my_dict['url'] = href
+                    my_list.append(my_dict)
+        return my_list
