@@ -10,29 +10,30 @@
         dataType: 'json'
     }).done(function (data) {
         var div = document.getElementById('content');
-        var str = ""
+        var str = "";
         for (i in data) {
-            str += "<text onclick=\"javascript:get_content(" + data[i].href + ")\">" + data[i].province + "</text>&nbsp;"
+            str += "<a onclick=\"javascript:get_content(" + data[i].href + ")\">" + data[i].province + "</a>&nbsp;"
             if (i != 0 && i % 10 == 0)
-                str += "</br>"
+                str += "</br>";
+            console.log(data[i].province)
         }
 
-        console.log(data)
+        console.log(data);
         div.innerHTML = str
     }).fail(function (xhr, status) {
         alert(xhr.status + ',' + status)
-    })
+    });
 
     function get_content(url) {
         $.ajax('/api/shiye' + url, {
             dataType: 'json'
         }).done(function (data) {
-            var str = ""
+            var str = "";
             for (i in data) {
                 str += "<tr> <td class=\"mdl-data-table__cell--non-numeric\" ><a href=\""
-                        + data[i].url + "\">" + data[i].title + "</a></td> </tr>"
+                        + data[i].url + "\" target=\"_blank\">" + data[i].title + "</a></td> </tr>"
             }
-            var tbody = document.getElementById('table-body-content')
+            var tbody = document.getElementById('table-body-content');
             tbody.innerHTML = str
         }).fail(function (xhr, status) {
             alert(xhr.status + ',' + status)
@@ -40,43 +41,71 @@
         })
     }
     function jump(url) {
-        alert(url)
+        alert(url);
         window.location.href = url
     }
 </script>
+<style>
+    .demo-card-square.mdl-card {
+        width: 70%;
+    }
+
+    .demo-card-square > .mdl-card__title {
+        color: #fff;
+        background: #46B6AC;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
     <title>事业编查询</title>
 </head>
 <body>
-<div class="snippet-demo-container demo-card demo-card__square" style="text-align: center;padding: 15px">
-    <style>
-        .demo-card-square.mdl-card {
-            width: 100%;
-        }
 
-        .demo-card-square > .mdl-card__title {
-            color: #fff;
-            background: #46B6AC;
-        }
-    </style>
-
-    <div class="demo-card-square mdl-card mdl-shadow--2dp">
-        <div class="mdl-card__title mdl-card--expand">
-            <h2 class="mdl-card__title-text">省份</h2>
+<div class="mdl-layout mdl-js-layout">
+    <header class="mdl-layout__header mdl-layout__header--scroll">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">事业单位招聘查询</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation -->
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/time">time</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+                <a class="mdl-navigation__link" href="">Link</a>
+            </nav>
         </div>
-        <div id="content" class="mdl-card__supporting-text">
-        </div>
+    </header>
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Title</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+            <a class="mdl-navigation__link" href="">Link</a>
+        </nav>
     </div>
-</div>
-<div style="padding: 15px ;width: 100% ;text-align:center">
-    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp"
-    >
+    <main class="mdl-layout__content">
+        <div class="snippet-demo-container demo-card demo-card__square" style="padding: 15px">
 
-        <tbody id="table-body-content">
-        </tbody>
-    </table>
-    <p style="bottom: auto">{{ time }}</p>
+
+            <div class="demo-card-square mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title mdl-card--expand">
+                    <h2 class="mdl-card__title-text">省份</h2>
+                </div>
+                <div id="content" class="mdl-card__supporting-text">
+                </div>
+            </div>
+        </div>
+        <div style="padding: 15px ;width: 70% ;text-align:center">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                <tbody id="table-body-content">
+                </tbody>
+            </table>
+            <p style="bottom: auto">{{ time }}</p>
+        </div>
+    </main>
 </div>
 
 </body>
