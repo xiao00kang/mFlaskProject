@@ -15,7 +15,8 @@ def download_html(url):
     try:
         r = requests.get(url, headers)
         if r.ok:
-            html = r.content
+            r.encoding = 'gbk'
+            html = r.text
             return BeautifulSoup(html, 'html.parser')
         else:
             raise RequestException('url:' + str(url) + ',status code:' + str(r.status_code))
