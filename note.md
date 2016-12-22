@@ -111,3 +111,55 @@ html标签如下:
                     my_dict['url'] = href
                     my_list.append(my_dict)
         return my_list
+        
+写入excel:
+ 
+爬去，写入省份信息提取成函数：
+
+    #cent用来计数已经爬去的信息数量，因为我们要爬去多页信息
+    def w_province(url, sheet, cent):
+        #捕捉异常，如404等
+        try:
+            soup = shiyebian_worm.download_html(url)
+        except Exception as e:
+            logging.info(e)
+            return cent
+        l = shiyebian_worm.parse_shengshi(soup)
+        for i in range(len(l)):
+            title = l[i]['title']
+            #用正则提取标题中的日期
+            date_regex = re.compile(r'\d\d-\d\d\d\d\d\d')
+            date = date_regex.search(title)
+            if date is None:
+                sheet.cell(row=i + cent, column=1).value = '--'
+            else:
+                sheet.cell(row=i + cent, column=1).value = date.group()
+                title = title[10:]
+            sheet.cell(row=i + cent, column=2).value = title
+            sheet.cell(row=i + cent, column=3).value = l[i]['url']
+        cent += len(l)
+        return cent
+
+
+
+    #获取省份列表
+    provinces = shiyebian_worm.get_list_province(shiyebian_worm.download_html(URL_SHIYE))
+    wb = openpyxl.Workbook()
+    #遍历省份爬去信息
+    for d in provinces:
+        #按省份创建sheet
+        sheet_province = wb.create_sheet(title=d['province'])
+        sheet_province['A1'] = '日期'
+        sheet_province['B1'] = '招聘信息'
+        sheet_province['C1'] = '详细连接'
+        url = URL_SHIYE + d['href']
+        cent = w_province(url+'index.html', sheet_province, 2)
+        #就爬两页，实际上爬去翻页的时候最好直接爬连接
+        url += 'index_2.html'
+        w_province(url, sheet_province, cent)
+        logging.info(d['province'] + '写入成功')
+    #删除空的sheet
+    wb.remove_sheet(wb.get_sheet_by_name('Sheet'))
+    #保存
+    wb.save('事业编招聘汇总.xlsx')
+       
