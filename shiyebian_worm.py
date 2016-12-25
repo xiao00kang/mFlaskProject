@@ -1,6 +1,8 @@
 # encoding=utf-8
 
 import logging
+import re
+
 import requests
 from bs4 import BeautifulSoup
 from exception import *
@@ -34,7 +36,6 @@ def parse_shengshi(soup, keyword=''):
         if keyword in content:
             my_dict = {}
             content_url = li.find('a')['href']
-            my_dict['title'] = content
             my_dict['url'] = content_url
             my_list.append(my_dict)
             #  获取链接内容
@@ -42,6 +43,18 @@ def parse_shengshi(soup, keyword=''):
             # div = soup.find('div', attrs={'class', 'zhengwen'})
             # for p in div.find_all('p'):
             #     print(p.getText())
+            # 查找时间
+            date_regex = re.compile(r'\d\d-\d\d\d\d\d\d')
+            date = date_regex.search(content)
+            if date is not None:
+                date = date.group()
+                # %Y-%m-%d
+                str_date = date[5:] + '-' + date[:5]
+                my_dict['date'] = str_date
+                my_dict['title'] = content[10:]
+            else:
+                my_dict['date'] = ''
+                my_dict['title'] = content
     return my_list
 
 
@@ -54,8 +67,18 @@ def parse_quxian(soup, keyword=''):
             if keyword in content:
                 href = a['href']
                 my_dict = {}
-                my_dict['title'] = content
                 my_dict['url'] = href
+                # 查找时间
+                date_regex = re.compile(r'\d\d-\d\d\d\d\d\d')
+                date = date_regex.search(content)
+                if isinstance(date, str):
+                    # %Y-%m-%d
+                    str_date = date[5, :] + '-' + date[:5]
+                    my_dict['date'] = str_date
+                    my_dict['title'] = content[10:]
+                else:
+                    my_dict['date'] = ''
+                    my_dict['title'] = content
                 my_list.append(my_dict)
     return my_list
 
